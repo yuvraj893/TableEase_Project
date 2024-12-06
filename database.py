@@ -1,5 +1,6 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
+import bcrypt  # For hashing passwords
 
 # Database connection settings
 DB_SETTINGS = {
@@ -31,24 +32,38 @@ def authenticate_user(email, password):
     if conn:
         try:
             cursor = conn.cursor()
-            query = "SELECT * FROM users WHERE email = %s AND password = %s"
-            cursor.execute(query, (email, password))
+            query = "SELECT * FROM users WHERE email = %s"
+            cursor.execute(query, (email,))
             user = cursor.fetchone()
             conn.close()
-            return user
+
+            if user and bcrypt.checkpw(password.encode('utf-8'), user[3].encode('utf-8')):  # Assuming password is the 4th column
+                return user
+            return None
         except Exception as e:
             print(f"Error during authentication: {e}")
             return None
     return None
 
 # Function to fetch all restaurants
-def get_all_restaurants():
+def get_all_restaurants(query=None):
     conn = get_db_connection()
     if conn:
         try:
             cursor = conn.cursor(cursor_factory=RealDictCursor)
-            query = "SELECT * FROM restaurants"
-            cursor.execute(query)
+            if query:
+                # Filter restaurants based on name, location, or cuisine
+                query = f"%{query}%"
+                sql = """
+                    SELECT restaurantid, name, location, cuisine
+                    FROM restaurants
+                    WHERE name ILIKE %s OR location ILIKE %s OR cuisine ILIKE %s
+                """
+                cursor.execute(sql, (query, query, query))
+            else:
+                # Fetch all restaurants
+                sql = "SELECT restaurantid, name, location, cuisine FROM restaurants"
+                cursor.execute(sql)
             restaurants = cursor.fetchall()
             conn.close()
             return restaurants
@@ -56,6 +71,7 @@ def get_all_restaurants():
             print(f"Error fetching restaurants: {e}")
             return None
     return None
+
 
 # Function to create a reservation
 def create_reservation(user_id, restaurant_id, date, time, guests):
@@ -169,6 +185,78 @@ def update_reservation_status(reservation_id, new_status):
             print(f"Error updating reservation status: {e}")
             return False
     return False
+
+# Function to create a new user
+def create_user(email, password, name):
+    conn = get_db_connection()
+    if conn:
+        try:
+            cursor = conn.cursor()
+            # Check if the email already exists
+            check_query = "SELECT * FROM users WHERE email = %s"
+            cursor.execute(check_query, (email,))
+            if cursor.fetchone():
+                conn.close()
+                return {"success": False, "message": "Email already exists"}
+
+            # Hash the password
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+            # Insert the new user
+            insert_query = """
+            INSERT INTO users (email, password, name)
+            VALUES (%s, %s, %s)
+            """
+            cursor.execute(insert_query, (email, hashed_password, name))
+            conn.commit()
+            conn.close()
+            return {"success": True, "message": "User created successfully"}
+        except Exception as e:
+            print(f"Error creating user: {e}")
+            return {"success": False, "message": "Error creating user"}
+    return {"success": False, "message": "Database connection failed"}
+
+# Function to fetch reviews for a specific restaurant
+def fetch_reviews(restaurant_id):
+    conn = get_db_connection()
+    if conn:
+        try:
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
+            query = """
+                SELECT r.reviewid, r.userid, u.name AS user_name, r.comment, r.rating, r.timestamp
+                FROM reviews r
+                JOIN users u ON r.userid = u.userid
+                WHERE r.restaurantid = %s
+                ORDER BY r.timestamp DESC
+            """
+            cursor.execute(query, (restaurant_id,))
+            reviews = cursor.fetchall()
+            conn.close()
+            return reviews
+        except Exception as e:
+            print(f"Error fetching reviews: {e}")
+            return None
+    return None
+
+# Function to add a review for a restaurant
+def add_review(user_id, restaurant_id, comment, rating):
+    conn = get_db_connection()
+    if conn:
+        try:
+            cursor = conn.cursor()
+            query = """
+                INSERT INTO reviews (userid, restaurantid, comment, rating, timestamp)
+                VALUES (%s, %s, %s, %s, NOW())
+            """
+            cursor.execute(query, (user_id, restaurant_id, comment, rating))
+            conn.commit()
+            conn.close()
+            return True
+        except Exception as e:
+            print(f"Error adding review: {e}")
+            return False
+    return False
+
 
 # Function to test the connection
 def test_connection():
