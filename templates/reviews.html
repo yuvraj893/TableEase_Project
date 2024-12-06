@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviews - TableEase</title>
+    <link rel="stylesheet" href="/static/css/reviews.css">
+</head>
+<body>
+    <div class="reviews-container">
+        <h1>Restaurant Reviews</h1>
+        <div id="reviewsList">
+            <!-- Reviews will be dynamically added here -->
+        </div>
+        <form id="reviewForm">
+            <h2>Leave a Review</h2>
+            <label for="rating">Rating (1-5):</label>
+            <select id="rating" name="rating" required>
+                <option value="">Select</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <label for="comment">Comment:</label>
+            <textarea id="comment" name="comment" placeholder="Write your review here" required></textarea>
+            <button type="submit">Submit Review</button>
+        </form>
+    </div>
+    <script src="/static/js/reviews.js"></script>
+</body>
+</html>
