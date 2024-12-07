@@ -1,0 +1,7 @@
+Flask
+Flask-SQLAlchemy
+psycopg2
+Jinja2
+Flask-WTF
+Werkzeug
+wtforms

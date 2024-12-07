@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Reservations</title>
+    <link rel="stylesheet" href="/static/reservations.css">
+</head>
+<body>
+    <div class="background">
+        <div class="reservations-container">
+            <h1>Your Reservations</h1>
+            {% if reservations %}
+            <table class="reservations-table">
+                <thead>
+                    <tr>
+                        <th>Restaurant</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Guests</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for reservation in reservations %}
+                    <tr>
+                        <td>{{ reservation.restaurant_name }}</td>
+                        <td>{{ reservation.date }}</td>
+                        <td>{{ reservation.time }}</td>
+                        <td>{{ reservation.numberofguests }}</td>
+                        <td>{{ reservation.status }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No reservations found.</p>
+            {% endif %}
+            <a href="/restaurants_page?user_id={{ user_id }}" class="back-link">Back to Restaurants</a>
+        </div>                
+    </div>
+</body>
+</html>

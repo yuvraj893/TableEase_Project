@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Reservation</title>
+    <link rel="stylesheet" href="/static/book.css">
+    <script src="/static/book.js" defer></script>
+</head>
+<body>
+    <div class="background">
+        <div class="book-container">
+            <h1 class="book-title">Book a <span>Reservation</span></h1>
+            <form id="bookForm" class="book-form">
+                <div>
+                    <label for="restaurantSelect">Restaurant</label>
+                    <select id="restaurantSelect">
+                        <option value="1">The Italian Place</option>
+                        <option value="2">Sushi World</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="dateInput">Date</label>
+                    <input type="date" id="dateInput" required>
+                </div>
+
+                <div>
+                    <label for="timeInput">Time</label>
+                    <input type="time" id="timeInput" required>
+                </div>
+
+                <div>
+                    <label for="guestsInput">Number of Guests</label>
+                    <input type="number" id="guestsInput" min="1" required>
+                </div>
+
+                <button type="submit" id="bookNowButton" class="book-button">Book Now</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
