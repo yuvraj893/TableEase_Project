@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard</title>
+    <link rel="stylesheet" href="/static/customer_dashboard.css">
+</head>
+<body>
+    <div class="background">
+        <div class="dashboard-container">
+            <h1>Your <span>Reservations</span></h1>
+            <table class="reservation-table">
+                <thead>
+                    <tr>
+                        <th>Restaurant</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Guests</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="reservation-list">
+                </tbody>
+            </table>
+            <button class="btn-primary" onclick="location.href='/book_page';">Book a New Reservation</button>
+        </div>
+    </div>
+    <script src="/static/customer_dashboard.js"></script>
+</body>
+</html>

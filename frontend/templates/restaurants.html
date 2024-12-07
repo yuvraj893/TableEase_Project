@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Restaurants</title>
+    <link rel="stylesheet" href="/static/restaurants.css">
+</head>
+<body>
+    <div class="background">
+        <div class="restaurants-container">
+            <h1 class="restaurant-title">Available <span>Restaurants</span></h1>
+
+            <form id="searchForm" action="/restaurants_page" method="get" class="search-form">
+                <input type="text" name="search" placeholder="Search by name, location, or cuisine" class="search-input" />
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+
+            <div class="restaurant-list">
+                {% for restaurant in restaurants %}
+                <div class="restaurant-card">
+                    <div class="restaurant-info">
+                        <h2 class="restaurant-name">{{ restaurant.name }}</h2>
+                        <p class="restaurant-details">{{ restaurant.location }} | Cuisine: {{ restaurant.cuisine }}</p>
+                    </div>
+                    <a href="/reviews/{{ restaurant.restaurantid }}" class="btn-secondary review-btn">View Reviews</a>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="action-buttons">
+                <a href="/book_page" class="btn-primary action-button">Book a Reservation</a>
+                <a href="/notifications" class="btn-primary action-button">Notifications</a>
+            </div>
+
+            <div class="logout-container">
+                <button id="logoutButton" class="btn-logout">Logout</button>
+            </div>
+        </div>
+    </div>
+    <script src="/static/restaurants.js" defer></script>
+</body>
+</html>
